@@ -1,0 +1,39 @@
+services:
+  auditops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      NITRO_HOST: 0.0.0.0
+      NITRO_PORT: "3000"
+      AUDITOPS_DB_PATH: /app/data/auditops.sqlite
+      AUDITOPS_TRUST_PROXY: "1"
+      AUDITOPS_MASTER_PASSWORD: "${AUDITOPS_MASTER_PASSWORD:?Configure AUDITOPS_MASTER_PASSWORD in Coolify}"
+    expose:
+      - "3000"
+    volumes:
+      - auditops_data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/login').then(r => process.exit(r.status < 500 ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 45s
+      retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run"]
+    environment:
+      TUNNEL_TOKEN: "${TUNNEL_TOKEN:?Configure TUNNEL_TOKEN in Coolify}"
+    depends_on:
+      auditops:
+        condition: service_healthy
+
+volumes:
+  auditops_data:
+    name: auditops_data

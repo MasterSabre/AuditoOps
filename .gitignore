@@ -1,0 +1,49 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Logs and generated artifacts
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack/**
+.nitro
+*.local
+coverage/
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Local SQL audit history; do not commit real records
+data/*.sqlite
+data/*.sqlite-*
+data/backups/
+data/auditops-otp-encryption.key
+
+# Ignore all archives except the source bundle required for browser upload
+*.zip
+!auditops-source.zip
+*.tgz
+ACESSO_MESTRE_INICIAL.txt
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env.production
+.env.development.local
